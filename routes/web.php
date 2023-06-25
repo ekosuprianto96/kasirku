@@ -29,11 +29,13 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::resource('produk', ProdukController::class);
     Route::resource('kategori', KategoriController::class);
     Route::get('barang-masuk', [BarangMasukController::class, 'index'])->name('barang-masuk');
+    Route::get('barang-masuk/cetak', [BarangMasukController::class, 'cetak'])->name('barang-masuk.cetak');
     Route::post('barang-masuk/filter', [BarangMasukController::class, 'filter'])->name('barang-masuk.filter');
     Route::get('buat-pesanan', [OrderController::class, 'index'])->name('buat-pesanan');
     Route::get('keranjang', [KeranjangController::class, 'index'])->name('keranjang');
     Route::post('checkout', [OrderController::class, 'checkout'])->name('checkout');
     Route::get('barang-keluar', [BarangKeluarController::class, 'index'])->name('barang-keluar');
+    Route::get('barang-keluar/cetak', [BarangKeluarController::class, 'cetak'])->name('barang-keluar.cetak');
     Route::get('kasir', [KasirController::class, 'index'])->name('kasir');
     Route::get('kasir/create', [KasirController::class, 'create'])->name('kasir.create');
     Route::post('kasir', [KasirController::class, 'store'])->name('kasir.store');

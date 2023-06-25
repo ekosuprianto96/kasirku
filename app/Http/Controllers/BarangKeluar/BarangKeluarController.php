@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\BarangKeluar;
 
-use App\Http\Controllers\Controller;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Http\Controllers\Controller;
 
 class BarangKeluarController extends Controller
 {
@@ -26,5 +27,12 @@ class BarangKeluarController extends Controller
             'active' => 'laporan',
             'barang' => $barang
         ]);
+    }
+    public function cetak(Request $request) {
+        $barang = Transaction::whereMonth('created_at', Carbon::now()->format('m'))
+        ->whereYear('created_at', Carbon::now()->format('Y'))->latest()->get();
+        // dd($barang);
+        $pdf = Pdf::loadView('barangKeluar.pdf', compact('barang'));
+        return $pdf->download('Laporan.pdf');
     }
 }

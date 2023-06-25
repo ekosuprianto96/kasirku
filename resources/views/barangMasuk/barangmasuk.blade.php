@@ -8,7 +8,7 @@
             <div class="card-body">
                 <div class="row justify-content-between px-2 my-3 align-items-center">
                     <div class="col-lg-6">
-                      <a href="" class="btn btn-sm btn-primary" style="width: max-content;height:max-content;"><i class='bx bxs-printer' ></i> Cetak PDF</a>
+                      <a href="{{ route('barang-masuk.cetak') }}" class="btn btn-sm btn-primary" style="width: max-content;height:max-content;"><i class='bx bxs-printer' ></i> Cetak PDF</a>
                       <a href="javascript:void(0)" data-bs-target="#modalFilter" data-bs-toggle="modal" class="btn btn-sm btn-secondary shadow-sm"><i class='bx bx-filter-alt'></i> Filter</a>
 
                       {{-- Modal --}}
