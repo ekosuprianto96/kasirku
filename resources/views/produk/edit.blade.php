@@ -67,6 +67,11 @@
                                             </span>
                                             <span class="d-block" style="font-weight: bold;">Tambahkan Gambar</span>
                                         </div>
+                                        @error('image')
+                                            <div class="invalid-feedback" style="display: block;">
+                                                {{ $message }}
+                                            </div>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>

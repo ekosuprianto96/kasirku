@@ -2,60 +2,68 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\Produk;
+use App\Models\Transaction;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use GrahamCampbell\ResultType\Success;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class APICartController extends Controller
 {
     public function store(Request $request)
     {
-        $produk = Produk::findOrFail($request->id);
-        $checkCart = Cart::where('produk_id', $produk->id)->first();
-        $countCart = null;
-        if ($produk !== null) {
-            if (isset($checkCart)) {
-                $cart = Cart::where('produk_id', $produk->id)->first();
-                $cart->jumlah += 1;
-                $cart->save();
-            } else {
-                Cart::create([
-                    'produk_id' => $produk->id,
-                    'nama_produk' => $produk->name,
-                    'satuan' => $produk->satuan,
-                    'harga' => $produk->harga,
-                    'jumlah' => 1
-                ]);
+        if($request->carts) {
+            $carts = json_decode($request->carts);
+            foreach($carts as $key => $cart) {
+                if($cart->total != 0) {
+                    $produk = Produk::where('barcode', $cart->barcode)->first();
+                    Transaction::create([
+                        'produk_id' => $produk->id,
+                        'kode_transaksi' => Str::upper(Str::random(3) . mt_rand(0, 9) . Str::random(2) . mt_rand(10, 99) . Str::random(3)),
+                        'nama_produk' => $produk->name,
+                        'kategori' => $produk->kategori->name,
+                        'satuan' => $produk->satuan,
+                        'harga_satuan' => $produk->harga,
+                        'harga_total' => $produk->harga * intval($cart->total),
+                        'jumlah' => $cart->total
+                    ]);
+                    $produk->stok -= intval($cart->total);
+                    $produk->save();
+                    // Alert::success('Sukses', 'Transaksi Berhasil!');
+                    
+                }
+                
             }
+            return response()->json([
+                'status' => true,
+                'message' => 'Berhasil Checkout'
+            ]);
         }
-
-        return response()->json([
-            'status' => true,
-            'produk' => $produk
-        ]);
+        
     }
     public function getCountProduk()
     {
         return response()->json([
-            'count' => $cart = Cart::all()->count()
+            'count' => $cartart = Cart::all()->count()
         ]);
     }
     public function update(Request $request)
     {
-        $cart = Cart::find($request->id);
-        $cart->jumlah = $request->jumlah;
+        $cartart = Cart::find($request->id);
+        $cartart->jumlah = $request->jumlah;
         $allCart = Cart::with('produk')->get();
         $totalHarga = 0;
-        foreach ($allCart as $c) {
-            $harga = $c->harga * $c->jumlah;
+        foreach ($allCart as $cart) {
+            $harga = $cart->harga * $cart->jumlah;
             $totalHarga += $harga;
         }
-        $cart->save();
+        $cartart->save();
         return response()->json([
             'status' => true,
-            'jumlah' => $cart->jumlah,
+            'jumlah' => $cartart->jumlah,
             'total' => $totalHarga
         ]);
     }
