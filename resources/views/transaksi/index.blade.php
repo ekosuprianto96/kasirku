@@ -52,7 +52,7 @@
         const dataForm = {
             id: idProduk
         };
-        fetch(`{{ route('api.cart.post') }}`, {
+        fetch(`{{ route('api.cart.post_admin') }}`, {
             method: 'POST',
             headers: {
                 'X-CSRF-TOKEN': __token,
