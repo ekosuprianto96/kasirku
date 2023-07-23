@@ -53,10 +53,11 @@ class KategoriController extends Controller
         }
 
         $image = '';
-        $mimes = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg'];
+        $mimes = ['image/jpeg', "image/png", 'image/jpg', 'image/svg'];
+        $mime = $request->file('image')->getMimeType();
+        // dd($request->file('image')->getMimeType());
         if ($request->hasFile('image')) {
-            foreach ($mimes as $index => $mime) {
-                if ($request->file('image')->getMimeType() !== $mimes[$index]) {
+                if (!array_search($mime, $mimes)) {
                     Alert::error('Gagal', 'Format Gambar Tidak Sesuai, Harap Upload Gambar Dengan Format jpg, jpeg, png dan svg!');
                     return redirect()->back();
                 } else {
@@ -72,7 +73,6 @@ class KategoriController extends Controller
                     Alert::success('Suksess', 'Kategori Berhasil Ditambahkan!');
                     return redirect()->back();
                 }
-            }
         } else {
             Alert::error('Gagal', 'Gambar Harus Di Isi!');
             return redirect()->back();

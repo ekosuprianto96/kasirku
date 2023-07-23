@@ -33,7 +33,6 @@ class APICartController extends Controller
                     $produk->stok -= intval($cart->total);
                     $produk->save();
                     // Alert::success('Sukses', 'Transaksi Berhasil!');
-                    
                 }
                 
             }
@@ -43,6 +42,31 @@ class APICartController extends Controller
             ]);
         }
         
+    }
+    public function store_admin(Request $request) {
+        $produk = Produk::findOrFail($request->id);
+        $checkCart = Cart::where('produk_id', $produk->id)->first();
+        $countCart = null;
+        if ($produk !== null) {
+            if (isset($checkCart)) {
+                $cart = Cart::where('produk_id', $produk->id)->first();
+                $cart->jumlah += 1;
+                $cart->save();
+            } else {
+                Cart::create([
+                    'produk_id' => $produk->id,
+                    'nama_produk' => $produk->name,
+                    'satuan' => $produk->satuan,
+                    'harga' => $produk->harga,
+                    'jumlah' => 1
+                ]);
+            }
+        }
+
+        return response()->json([
+            'status' => true,
+            'produk' => $produk
+        ]);
     }
     public function getCountProduk()
     {

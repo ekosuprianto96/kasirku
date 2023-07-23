@@ -17,6 +17,7 @@
       table {
         border-collapse: collapse;
         width: 100%;
+        border: 1px solid black;
         
       }
     </style>
@@ -53,7 +54,7 @@
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="5" style="text-align: center;">Total :</td>
+          <td colspan="4" style="text-align: center;">Total :</td>
           <td colspan="4" style="text-align: center;">{{ $barang->sum('jumlah') }}</td>
         </tr>
       </tfoot>

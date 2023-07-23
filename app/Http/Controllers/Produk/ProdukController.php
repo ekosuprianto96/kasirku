@@ -57,29 +57,28 @@ class ProdukController extends Controller
             'satuan' => 'required',
         ]);
         $mimes = ['image/jpeg', 'image/png', 'image/jpg', 'image/svg'];
+        $mime = $request->file('image')->getMimeType();
         if ($request->hasFile('image')) {
-            foreach ($mimes as $index => $mime) {
-                if ($request->file('image')->getMimeType() !== $mimes[$index]) {
-                    Alert::error('Gagal', 'Format Gambar Tidak Sesuai, Harap Upload Gambar Dengan Format jpg, jpeg, png dan svg!');
-                    return redirect()->back();
-                } else {
-                    $file = $request->file('image');
-                    $ext = $file->getClientOriginalExtension();
-                    $newName = Str::random(32) . '.' . $ext;
-                    $file->storeAs('public/produk', $newName);
+            if (!array_search($mime, $mimes)) {
+                Alert::error('Gagal', 'Format Gambar Tidak Sesuai, Harap Upload Gambar Dengan Format jpg, jpeg, png dan svg!');
+                return redirect()->back();
+            } else {
+                $file = $request->file('image');
+                $ext = $file->getClientOriginalExtension();
+                $newName = Str::random(32) . '.' . $ext;
+                $file->storeAs('public/produk', $newName);
 
-                    $produk = Produk::create([
-                        'image' => $newName,
-                        'name' => $request->name,
-                        'barcode' => random_int(100000000, 999999999),
-                        'kategori_id' => $request->kategori,
-                        'harga' => $request->harga,
-                        'satuan' => $request->satuan,
-                    ]);
-                    Alert::success('Sukses', 'Produk Berhasil Di Tambah!');
+                $produk = Produk::create([
+                    'image' => $newName,
+                    'name' => $request->name,
+                    'barcode' => random_int(100000000, 999999999),
+                    'kategori_id' => $request->kategori,
+                    'harga' => $request->harga,
+                    'satuan' => $request->satuan,
+                ]);
+                Alert::success('Sukses', 'Produk Berhasil Di Tambah!');
 
-                    return redirect()->route('produk.index');
-                }
+                return redirect()->route('produk.index');
             }
         } else {
             Alert::error('Gagal', 'Produk Gagal Di Tambah! Gambar Harus Di Isi.');
